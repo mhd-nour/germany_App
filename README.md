@@ -9,10 +9,11 @@ LernDeutsch AI is a mobile-first language learning system that automates German 
 Using Gemini 1.5 Flash, the system performs multimodal OCR, translation, and grammatical analysis in a single AI pass, extracting nouns, verbs, adjectives, adverbs, and phrases with full linguistic metadata.  
 The app combines AI automation, strict normalization rules, and a human-in-the-loop review workflow to ensure both accuracy and learner control.
 
-**Key Objectives**
+- **Phase 1: Backend Architecture (DONE)**  
+  Supabase initialization, Database Schema definition (Vocabulary, Profiles), and RLS security policies.
 
-- **Automated Vocabulary Extraction**  
-  Convert images into structured vocabulary entries (Nouns, Verbs, Adjectives, Adverbs, Phrases).
+- **Phase 2: Mobile UI & User Experience (UP NEXT)**  
+  Implementing the React Native frontend, Camera/Gallery integration, and the AI Review workflow.
 
 - **Linguistic Accuracy**  
   Ensure correct articles, plurals, verb helpers, conjugations, and example sentences.
@@ -164,25 +165,17 @@ To ensure a smooth user experience:
 | Adjectives / Adverbs | Translation, comparative (if applicable), example | {"word":"schnell","translation":"fast","comparative":"schneller","example":"Das Auto fährt sehr schnell."} |
 | Phrases           | Single unit, translation, example     | {"phrase":"Guten Appetit","translation":"Enjoy your meal","example":"Das Essen ist fertig. Guten Appetit!"} |
 
-## 9. Implementation Roadmap
+- **Phase 1 – Backend Architecture [DONE]**  
+  - [x] Database Schema (PostgreSQL)  
+  - [x] Row Level Security (RLS) Policies  
+  - [x] Storage Buckets for Source Images  
 
-- **Phase 1 – AI & OCR**  
-  - Prompt engineering for stable, valid JSON  
-  - Enforce extraction rules per category
-
-- **Phase 2 – Mobile UI**  
-  - Review & Edit screen  
-  - Search & filters
-
-- **Phase 3 – Backend Logic**  
-  - Deduplication  
-  - Normalization  
-  - Validation rules
-
-- **Phase 4 – Sync & Reliability**  
-  - Supabase sync  
-  - Inngest background workers  
-  - Notifications
+- **Phase 2 – AI Integration & Mobile UI (In Progress)**  
+  - [ ] **AI Logic:** Prompt engineering for stable, valid JSON extraction.
+  - [ ] **Camera & Gallery:** Implementation of image capture and file picker.
+  - [ ] **Review Screen:** Interactive UI to verify Gemini-extracted data.
+  - [ ] **Vocabulary Management:** List view with search, filters, and mastery status.
+  - [ ] **User Auth UI:** Login/Signup flows via Supabase Auth.
 
 ## 10. Key Advantages
 
