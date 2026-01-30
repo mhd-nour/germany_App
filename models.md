@@ -11,3 +11,9 @@
 | **FLUX.1 Pro**             | ✔️               | ⭐⭐⭐⭐⭐        | Ultra-clean, design-friendly illustration         |
 | **DALL·E 3**               | ✔️               | ⭐⭐⭐⭐⭐        | Concept-accurate, educational visuals             |
 | **Stable Diffusion XL Pro** | ✔️              | ⭐⭐⭐⭐½       | Realistic environments and detailed scenes        |
+
+| Model                | Image Gen | Free Tier        | Best For                                      |
+|----------------------|-----------|------------------|-----------------------------------------------|
+| **FLUX.1 Schnell**   | ✔️        | Often free       | Fast, clean, professional illustrations       |
+| **FLUX.1 Dev**       | ✔️        | Limited / Free   | High-quality educational & UI-ready images    |
+| **Stable Diffusion XL (SDXL)** | ✔️ | Often free | Detailed, realistic or stylized images        |
