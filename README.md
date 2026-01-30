@@ -1,162 +1,199 @@
-# **Project Documentation: LernDeutsch AI**
+# Project Documentation: LernDeutsch AI
 
-**An AI-powered mobile ecosystem for automated German vocabulary extraction and management**
+An AI-powered mobile ecosystem for automated German vocabulary extraction and mastery management
 
----
+## 1. Executive Summary
 
-## **1. Executive Summary**
+LernDeutsch AI is a mobile-first language learning system that automates German vocabulary acquisition by transforming images of text into structured, study-ready data.
 
-**LernDeutsch AI** is designed to automate and simplify German language learning. The app enables learners to extract, organize, and review German vocabulary directly from text images. Using **Multimodal LLMs (Gemini 1.5 Flash)**, the system performs OCR and linguistic analysis in a single step, producing structured, study-ready vocabulary data. This eliminates manual entry, reduces errors, and improves learning efficiency.
+Using Gemini 1.5 Flash, the system performs multimodal OCR, translation, and grammatical analysis in a single AI pass, extracting nouns, verbs, adjectives, adverbs, and phrases with full linguistic metadata.  
+The app combines AI automation, strict normalization rules, and a human-in-the-loop review workflow to ensure both accuracy and learner control.
 
-Key Goals:
+**Key Objectives**
 
-- Automate vocabulary extraction from images.
-- Maintain clean, deduplicated, and structured vocabulary data.
-- Offer a mobile-first interface for easy review and editing.
-- Provide optional sync with tools like Notion for cross-platform learning.
+- **Automated Vocabulary Extraction**  
+  Convert images into structured vocabulary entries (Nouns, Verbs, Adjectives, Adverbs, Phrases).
 
----
+- **Linguistic Accuracy**  
+  Ensure correct articles, plurals, verb helpers, conjugations, and example sentences.
 
-## **2. Technical Stack (Architecture)**
+- **Data Integrity**  
+  Deduplicate entries, normalize German characters (ä, ö, ü, ß), and enforce consistency.
 
-| Component | Technology | Rationale |
-| --- | --- | --- |
-| **Mobile Frontend** | React Native + Expo | Cross-platform (iOS/Android) development, native camera access, fast UI performance. |
-| **Backend API** | FastAPI (Python) | High-performance, asynchronous handling of AI requests, image uploads, and data processing. |
-| **AI Engine** | Gemini 1.5 Flash | Multimodal capability: OCR + linguistic analysis in one step. Cost-effective and fast. |
-| **Database & Auth** | Supabase (PostgreSQL) | Real-time sync, powerful querying, deduplication, secure authentication. |
-| **File Storage** | Supabase Storage | Optimized storage for uploaded images with direct URL access. |
-| **Workflow Engine** | Inngest | Manages retries, multi-step background tasks, and replaces n8n for a production-ready workflow. |
+- **Learning Lifecycle Management**  
+  Track each word from New → Learning → Reviewing → Mastered.
 
----
+## 2. Technical Stack (Architecture)
 
-## **3. System Workflow (Step-by-Step)**
+| Component        | Technology          | Rationale                                                   |
+|-----------------|------------------|------------------------------------------------------------|
+| Mobile Frontend  | React Native + Expo | Cross-platform support; camera & gallery access (FR-1.1). |
+| Backend API      | FastAPI (Python)    | High-performance async processing and AI orchestration.   |
+| AI Engine        | Gemini 1.5 Flash    | Single-pass OCR + translation + grammar extraction (FR-1.2). |
+| Database & Auth  | Supabase (PostgreSQL) | Relational storage, auth, RLS, and offline sync (FR-4.1, FR-6). |
+| Background Jobs  | Inngest             | Reliable retries for AI calls and uploads (FR-5.1).       |
 
-### **Phase 1: Image Ingestion**
+## 3. System Workflow & Logic
 
-1. **Capture:** User takes a photo of German text via the mobile app.
-2. **Upload:** Image is uploaded to **Supabase Storage**.
-3. **Trigger:** FastAPI receives the URL of the uploaded image for processing.
+### Phase 1: Image Ingestion & OCR (FR-1)
 
-### **Phase 2: AI Intelligence & Analysis**
+**Image Capture / Upload**  
+Users capture text via camera or upload from the gallery (FR-1.1).
 
-1. **AI Request:** Backend sends image to Gemini 1.5 Flash.
-2. **Multimodal Processing:**
-    - OCR extracts text.
-    - German grammar rules are applied (A1-C1 level).
-3. **Structured Output:** Gemini returns a JSON object containing:
-    - Nouns (with articles and plurals)
-    - Verbs (with forms)
-    - Phrases & example sentences
+**AI Processing**  
+Gemini 1.5 Flash extracts:  
+- German text  
+- Translation  
+- Grammatical metadata  
+- Word category  
+in one single pass (FR-1.2).
 
-### **Phase 3: Data Integrity & Deduplication**
+**German Character Support**  
+Full support for umlauts (ä, ö, ü) and Eszett (ß) (FR-1.3).
 
-1. **Query:** Backend checks if the extracted items exist in the user’s vocabulary table.
-2. **Filter:** Only new or updated words are kept.
-3. **Normalization:**
-    - Hyphenated words joined
-    - Articles standardized
-    - Capitalization corrected
+**Contextual Generation**  
+If no example sentence exists, the AI generates at least one contextual example per noun or verb (FR-1.4).
 
-### **Phase 4: User Review & Persistence**
+### Phase 2: Categorization & Normalization (FR-2)
 
-1. **Approval UI:** Users see a list of "Found Words" and can edit or approve them.
-2. **Final Save:** Approved words are stored in **Supabase** and optionally synced to **Notion**.
+Extracted words are automatically categorized into:  
+- Nouns  
+- Verbs  
+- Adjectives  
+- Adverbs  
+- Phrases (multi-word expressions)
 
----
+The system enforces strict normalization rules:  
+- Nouns must include definite article and plural  
+- Verbs must include helper verb and past participle  
+- Special characters are preserved
 
-## **4. Data Schema (Core Models)**
+### Phase 3: Data Integrity & Deduplication (FR-2.2)
 
-### **Vocabulary Table**
+Before presenting results to the user:  
+- The backend checks if the same word + category already exists.  
+- Duplicate entries are flagged, merged, or skipped to prevent clutter.  
 
-| Column | Type | Description |
-| --- | --- | --- |
-| id | UUID (PK) | Unique identifier for each vocabulary entry |
-| user_id | UUID (FK) | References the user who owns the entry |
-| word | String | e.g., "Apfel" |
-| article | Enum | der/die/das or null |
-| plural | String | e.g., "Äpfel" or "[-]" if no plural |
-| word_type | Enum | Noun, Verb, Adjective, Phrase |
-| translation | String | English/Arabic translation |
-| example_sentence | Text | Contextual sentence |
-| image_url | String | Reference to source image |
-| status | Enum | New, Reviewing, Mastered |
-| created_at | Timestamp | Date of creation |
+This ensures a clean and meaningful vocabulary database.
 
----
+### Phase 4: User Review & Persistence (FR-3)
 
-## **5. User Table**
+**Review & Edit Screen (Mandatory)**  
+Users verify and edit AI-generated data before saving (FR-3.1).
 
-| Column | Type | Description |
-| --- | --- | --- |
-| id | UUID (PK) | Unique user identifier |
-| email | String | User login email |
-| name | String | Full name |
-| created_at | Timestamp | Registration date |
-| preferences | JSON | Optional: user settings like sync options, learning level |
+**Manual Control**  
+Users can manually create, edit, or delete vocabulary entries at any time (FR-2.4).
 
----
+**Persistence & Sync**  
+Approved data is saved locally and synced to Supabase when online (FR-4.1).
 
-## **6. Implementation Roadmap**
+## 4. Vocabulary Management & Mastery Tracking
 
-### **Milestone 1: Cloud Core (Week 1)**
+Each vocabulary entry is tracked using a learning lifecycle:  
+- New  
+- Learning  
+- Reviewing  
+- Mastered (FR-3.2)
 
-- Set up Supabase (Database, Auth, Storage).
-- Deploy FastAPI backend on a cloud provider (Railway, Vercel).
-- Test basic API endpoints for image upload and retrieval.
+The app provides:  
+- Search by word  
+- Filter by status, date, or category (FR-3.3)
 
-### **Milestone 2: AI Brain (Week 2)**
+## 5. Data Schema (Core Models)
 
-- Integrate Gemini 1.5 Flash.
-- Fine-tune system prompts to enforce German grammar rules.
-- Validate JSON structure for nouns, verbs, and phrases.
+**Vocabulary Table**
 
-### **Milestone 3: Mobile Experience (Week 3)**
+| Column          | Type                 | Description                        |
+|-----------------|--------------------|-----------------------------------|
+| id              | UUID (PK)           | Unique identifier                 |
+| user_id         | UUID (FK)           | Owner reference (RLS protected)  |
+| word            | String              | Base word or phrase               |
+| article         | Enum                | der / die / das / null            |
+| plural          | String              | Plural form (if applicable)       |
+| helper_verb     | Enum                | haben / sein (verbs only)         |
+| past_participle | String              | Verb past participle              |
+| translation     | String              | English meaning                   |
+| example         | Text                | Contextual example sentence       |
+| category        | Enum                | Noun, Verb, Adjective, Adverb, Phrase |
+| status          | Enum                | New, Learning, Reviewing, Mastered |
+| image_url       | String              | Source image (Supabase Storage)   |
+| created_at      | Timestamp           | Creation date                     |
 
-- Implement Camera & Image Preview screens in React Native.
-- Build “Review List” for user approval of extracted words.
-- Add status tracking (New, Reviewing, Mastered).
+**Profiles Table (Optional / Recommended)**
 
-### **Milestone 4: Polish & Sync (Week 4)**
+Stores application-specific user data.
 
-- Finalize deduplication & normalization logic.
-- Add optional Notion integration for syncing user data.
-- Implement error handling, retries, and workflow monitoring with Inngest.
+| Column        | Type                         | Description                       |
+|---------------|------------------------------|-----------------------------------|
+| id            | UUID (PK, FK → auth.users.id)| User identifier                   |
+| email         | Text                         | Cached email (optional)           |
+| display_name  | Text                         | Optional username                 |
+| created_at    | Timestamp                    | Profile creation time             |
 
----
+## 6. Authentication & Security (FR-6)
 
-## **7. Key Advantages Over Previous Workflow**
+Supabase Auth handles:  
+- User registration via Email & Password (FR-6.1)  
+- Secure login and logout (FR-6.2)  
+- Persistent sessions across app restarts (FR-6.4)
 
-1. **Speed:** Direct API uploads eliminate Google Drive lag.
-2. **UI/UX:** Users can edit extracted data before it’s saved.
-3. **Cost:** Gemini 1.5 Flash is cheaper than separate OCR + GPT-4 calls.
-4. **Scalability:** Architecture supports thousands of users.
-5. **Automation:** Reduces repetitive tasks and human error.
+**Row Level Security (RLS) ensures:**  
+- Users can only access their own vocabulary data (FR-6.3)  
+- Policies are enforced at the database level (no frontend bypass)
 
----
+**User Profile Management**  
+Optional profiles table stores display names, preferences, or other app-specific info.
 
-## **8. Optional Features / Future Enhancements**
+## 7. Background Tasks & Reliability (FR-5)
 
-- **Smart Learning Suggestions:** AI recommends words to review based on user performance.
-- **Gamification:** Points, streaks, and achievements to motivate learning.
-- **Multi-language support:** Extract words and translations in multiple languages.
-- **Offline Mode:** Allow offline OCR and queue tasks for sync later.
-- **Analytics Dashboard:** Track user progress, most reviewed words, mastery rate.
+To ensure a smooth user experience:  
+- **Inngest Background Jobs**  
+  - Retry failed AI calls  
+  - Retry failed image uploads (FR-5.1)  
+- **User Notifications**  
+  - Push notification or in-app toast when processing finishes (FR-5.2)
 
----
+## 8. Technical Logic: Word Extraction Rules
 
-## **9. Security & Privacy Considerations**
+**AI Output Structure Rules**
 
-- Secure image uploads using Supabase signed URLs.
-- Encrypt sensitive user data (emails, user IDs).
-- GDPR and local compliance for user data storage.
-- Optional anonymous mode without storing images permanently.
+| Category          | Requirement                           | JSON Example |
+|------------------|---------------------------------------|--------------|
+| Nouns             | Article, plural, translation, example | {"word":"Tisch","article":"der","plural":"Tische","translation":"table","example":"Der Tisch ist aus Holz."} |
+| Verbs             | Infinitive, helper, past participle, example | {"word":"gehen","helper":"sein","past_participle":"gegangen","translation":"to go","example":"Ich bin nach Hause gegangen."} |
+| Adjectives / Adverbs | Translation, comparative (if applicable), example | {"word":"schnell","translation":"fast","comparative":"schneller","example":"Das Auto fährt sehr schnell."} |
+| Phrases           | Single unit, translation, example     | {"phrase":"Guten Appetit","translation":"Enjoy your meal","example":"Das Essen ist fertig. Guten Appetit!"} |
 
----
+## 9. Implementation Roadmap
 
-## **10. Documentation & Developer Notes**
+- **Phase 1 – AI & OCR**  
+  - Prompt engineering for stable, valid JSON  
+  - Enforce extraction rules per category
 
-- **API Docs:** FastAPI includes OpenAPI auto-generated docs.
-- **Code Guidelines:** Use type hints, PEP8 standards, and clear comments.
-- **Testing:** Unit tests for backend processing, integration tests for AI outputs.
-- **Workflow Monitoring:** Inngest logs all failures and retries automatically.
+- **Phase 2 – Mobile UI**  
+  - Review & Edit screen  
+  - Search & filters
+
+- **Phase 3 – Backend Logic**  
+  - Deduplication  
+  - Normalization  
+  - Validation rules
+
+- **Phase 4 – Sync & Reliability**  
+  - Supabase sync  
+  - Inngest background workers  
+  - Notifications
+
+## 10. Key Advantages
+
+- **Single-Pass Intelligence**  
+  One AI replaces OCR, translator, and dictionary tools.
+
+- **High Linguistic Precision**  
+  Articles, plurals, helpers, and examples are enforced automatically.
+
+- **Human-in-the-Loop Control**  
+  Users always approve before data is saved.
+
+- **Scalable & Secure Architecture**  
+  Auth, RLS, background jobs, and sync built-in from day one.
