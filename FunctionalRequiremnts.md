@@ -37,14 +37,15 @@
 
 ---
 
-FR-6: User Authentication & Security (New)
-FR-6.1: The system shall allow users to create an account via Email/Password.
+## 6. User Authentication & Security (New)
 
-FR-6.2: The system shall provide a secure Login and Logout mechanism using Supabase Auth.
+- ** FR-6.1: The system shall allow users to create an account via Email/Password.
 
-FR-6.3: The system must implement Row Level Security (RLS) so that users can only access their own vocabulary data.
+- ** FR-6.2: The system shall provide a secure Login and Logout mechanism using Supabase Auth.
 
-FR-6.4: The system shall persist the user session locally so that the user does not need to log in every time the app is opened.
+- ** FR-6.3: The system must implement Row Level Security (RLS) so that users can only access their own vocabulary data.
+
+- ** FR-6.4: The system shall persist the user session locally so that the user does not need to log in every time the app is opened.
 
 ---
 
