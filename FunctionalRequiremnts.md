@@ -9,7 +9,7 @@
 
 ## 2. Vocabulary Management
 
-- **FR-2.1:** The system shall automatically categorize extracted words into "Nouns," "Verbs," "Adjectives," or "Phrases."  
+- **FR-2.1:** The system shall automatically categorize extracted words into "Nouns," "Verbs,", "Adverbs", "Adjectives," or "Phrases."  
 - **FR-2.2:** The system must perform a deduplication check against the user's existing database to prevent duplicate entries of the same word.  
 - **FR-2.3:** The system shall provide a "Normalization" step to ensure all nouns are saved with their correct definite article (der, die, das) and plural forms.  
 - **FR-2.4:** Users shall be able to manually create, edit, or delete vocabulary entries.  
@@ -19,7 +19,7 @@
 ## 3. User Workflow & Interface
 
 - **FR-3.1:** The system shall present a "Review & Edit" screen after AI processing, allowing the user to verify the extracted data before it is persisted to the database.  
-- **FR-3.2:** The system shall track the mastery status of each word using three states: New, Reviewing, and Mastered.  
+- **FR-3.2:** The system shall track the mastery status of each word using three states: New, learning, Reviewing, and Mastered.  
 - **FR-3.3:** The system shall provide a search and filter functionality to allow users to find specific words by status, date, or word type.  
 
 ---
@@ -27,7 +27,6 @@
 ## 4. Synchronization & Integration
 
 - **FR-4.1:** The system shall automatically sync the local mobile state with the Supabase PostgreSQL database when a connection is available.  
-- **FR-4.2:** (Optional) The system shall provide a toggle to export or sync approved vocabulary to a specified Notion database via the Notion API.  
 
 ---
 
@@ -40,10 +39,12 @@
 
 ## Technical Logic Table: Word Extraction Rules
 
-To ensure the AI (Gemini) behaves as expected, the functional requirements include these specific "Linguistic Logic" rules:
+This table defines how the AI should structure the JSON output for each category to ensure consistency.
 
-| Category | Requirement | Output Expectation |
-|--------|-------------|-------------------|
-| Nouns | Must include gender and plural | `{"word": "Tisch", "article": "der", "plural": "Tische"}` |
-| Verbs | Must include infinitive and helper verb | `{"word": "gehen", "helper": "sein", "past_participle": "gegangen"}` |
-| Phrases | Must be extracted as a single unit | `{"phrase": "Guten Appetit", "meaning": "Enjoy your meal"}` |
+| Category | Requirement | Output Expectation (JSON Example) |
+|--------|-------------|----------------------------------|
+| Nouns | Must include gender, plural, translation, and example. | `{"word": "Tisch", "article": "der", "plural": "Tische", "translation": "table", "example": "Der Tisch ist aus Holz."}` |
+| Verbs | Must include infinitive, helper verb, translation, and example. | `{"word": "gehen", "helper": "sein", "past_participle": "gegangen", "translation": "to go", "example": "Ich bin nach Hause gegangen."}` |
+| Adjectives / Adverbs | Must include translation, comparative forms (if applicable), and example. | `{"word": "schnell", "translation": "fast", "comparative": "schneller", "example": "Das Auto fährt sehr schnell."}` |
+| Phrases | Must be extracted as a single unit with translation and example. | `{"phrase": "Guten Appetit", "translation": "Enjoy your meal", "example": "Das Essen ist fertig. Guten Appetit!"}` |
+
