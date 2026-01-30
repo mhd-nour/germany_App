@@ -166,11 +166,13 @@ To ensure a smooth user experience:
 | Phrases           | Single unit, translation, example     | {"phrase":"Guten Appetit","translation":"Enjoy your meal","example":"Das Essen ist fertig. Guten Appetit!"} |
 
 - **Phase 1 – Backend Architecture [DONE]**  
+  [Details: phase1_supabase.md](file:///e:/GermanyApp/germany_App/phase1_supabase.md)
   - [x] Database Schema (PostgreSQL)  
   - [x] Row Level Security (RLS) Policies  
   - [x] Storage Buckets for Source Images  
 
 - **Phase 2 – AI Integration & Mobile UI (In Progress)**  
+  [Details: phase2_mobile_ui.md](file:///e:/GermanyApp/germany_App/phase2_mobile_ui.md)
   - [ ] **AI Logic:** Prompt engineering for stable, valid JSON extraction.
   - [ ] **Camera & Gallery:** Implementation of image capture and file picker.
   - [ ] **Review Screen:** Interactive UI to verify Gemini-extracted data.
