@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "LernDeutsch AI",
+    "slug": "lerndeutsch-ai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F172A"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.lerndeutsch.ai",
+      "infoPlist": {
+        "NSCameraUsageDescription": "LernDeutsch AI needs camera access to capture vocabulary from images.",
+        "NSPhotoLibraryUsageDescription": "LernDeutsch AI needs photo library access to import vocabulary images."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0F172A"
+      },
+      "package": "com.lerndeutsch.ai",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow LernDeutsch AI to access your camera to capture vocabulary."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow LernDeutsch AI to access your photos to import vocabulary images."
+        }
+      ]
+    ]
+  }
+}
