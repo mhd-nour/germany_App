@@ -192,3 +192,35 @@ To ensure a smooth user experience:
 
 - **Scalable & Secure Architecture**  
   Auth, RLS, background jobs, and sync built-in from day one.
+
+## 11. UI/UX Design System
+
+**Design Philosophy:** "Premium, Focused, & Intelligent"
+
+### Color Palette: "Midnight Germany" (Dark Mode)
+```javascript
+export const COLORS = {
+  background: ['#0F172A', '#1E293B'], // Background Gradient
+  surface: '#1E293B',
+  primary: ['#F59E0B', '#D97706'],     // Button Gradient (Amber)
+  secondary: ['#14B8A6', '#0D9488'],   // Mastered Words Gradient (Teal)
+  accent: '#EF4444',
+  text: '#F8FAFC',
+  textMuted: '#94A3B8',
+  
+  // Grammar Colors (Optional but very useful)
+  masculine: '#3B82F6', // Der
+  feminine: '#EC4899',  // Die
+  neuter: '#10B981',    // Das
+};
+```
+
+### Typography
+- **Font:** `Inter` or `Outfit`
+- **Styles:** H1 (28px Bold), H2 (20px Semi-Bold), Body (16px Regular).
+
+### Navigation Structure
+1. **Dashboard:** Daily stats and recent activity.
+2. **Capture (Central):** Camera/Gallery -> AI Processing -> Review.
+3. **Library:** Searchable vocabulary list.
+4. **Profile:** Settings and Sync.
